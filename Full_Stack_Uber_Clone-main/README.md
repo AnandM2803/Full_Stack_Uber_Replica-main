@@ -1,10 +1,10 @@
-# 🚗 Full Stack Uber Clone 🚖
+# 🚗 TravellIn 🚖
 
 ## 💡 Description
 
-This **Uber Clone** is a fully functional web application built using the **MERN stack** (MongoDB, Express.js, React, and Node.js). The application emulates the core features of the popular ride-hailing service Uber, providing an intuitive user experience for both **users** (passengers) and **captains** (drivers). It allows users to register, authenticate, book rides, track real-time locations, and manage profiles, while captains can receive ride requests and manage their rides.
+This **TravellIn** application is a fully functional web application built using the **MERN stack** (MongoDB, Express.js, React, and Node.js). The application emulates the core features of a ride-hailing service, providing an intuitive user experience for both **users** (passengers) and **captains** (drivers). It allows users to register, authenticate, book rides, track real-time locations, and manage profiles, while captains can receive ride requests and manage their rides.
 
-With features like real-time location tracking, Google Maps integration, and a seamless booking system, this Uber clone delivers a high-quality ride-sharing service with all the essentials.
+With features like real-time location tracking, Google Maps integration, and a seamless booking system, TravellIn delivers a high-quality ride-sharing service with all the essentials.
 
 ## 🚀 Main Features
 
@@ -86,10 +86,10 @@ cd frontend
 npm run dev
 ```
 
-- Access the Application: Open your browser and go to http://localhost:3000 to start using the Uber Clone platform.
+- Access the Application: Open your browser and go to http://localhost:3000 to start using the TravellIn platform.
 
 ## 🎯 Ideal For
 
-- 🚖 Ride-Hailing Services: Easily set up your own ride-hailing platform with this clone, using core features similar to Uber.
+- 🚖 Ride-Hailing Services: Easily set up your own ride-hailing platform with TravellIn, using core features designed for modern travel booking.
 - 🧑‍💻 Developers: A great project for developers looking to build a full-stack ride-booking platform with real-time tracking.
-- 🌍 Entrepreneurs & Startups: Quickly deploy a fully functional Uber-like platform for your own local ride-sharing service.
+- 🌍 Entrepreneurs & Startups: Quickly deploy a fully functional TravellIn platform for your own local ride-sharing service.

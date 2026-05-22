@@ -28,6 +28,8 @@ router.post('/login', [
 
 router.get('/profile', authMiddleware.authCaptain, captainController.getCaptainProfile)
 
+router.get('/stats', authMiddleware.authCaptain, captainController.getCaptainStats)
+
 router.get('/logout', authMiddleware.authCaptain, captainController.logoutCaptain)
 
 

@@ -19,6 +19,22 @@ module.exports.getCoordinates = async (req, res, next) => {
     }
 }
 
+module.exports.getAddressFromCoordinates = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { lat, lng } = req.query;
+
+    try {
+        const result = await mapService.getCoordinateAddress(lat, lng);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(404).json({ message: 'Address not found' });
+    }
+}
+
 module.exports.getDistanceTime = async (req, res, next) => {
 
     try {

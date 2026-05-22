@@ -1,5 +1,6 @@
 const captainModel = require('../models/captain.model');
 const captainService = require('../services/captain.service');
+const rideService = require('../services/ride.service');
 const blackListTokenModel = require('../models/blackListToken.model');
 const { validationResult } = require('express-validator');
 
@@ -87,6 +88,15 @@ module.exports.loginCaptain = async (req, res, next) => {
 
 module.exports.getCaptainProfile = async (req, res, next) => {
     res.status(200).json({ captain: req.captain });
+}
+
+module.exports.getCaptainStats = async (req, res, next) => {
+    try {
+        const stats = await rideService.getCaptainStats(req.captain._id);
+        res.status(200).json({ stats });
+    } catch (error) {
+        next(error);
+    }
 }
 
 module.exports.logoutCaptain = async (req, res, next) => {

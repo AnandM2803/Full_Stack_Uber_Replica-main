@@ -161,6 +161,22 @@ module.exports.confirmRide = async (req, res) => {
     }
 );
 
+        if (ride.captain?.location?.lat != null && ride.captain?.location?.lng != null) {
+            sendMessageToSocketId(
+                ride.user.socketId,
+                {
+                    event: 'captain-location-update',
+                    data: {
+                        rideId: ride._id,
+                        location: {
+                            lat: ride.captain.location.lat,
+                            lng: ride.captain.location.lng,
+                        },
+                    },
+                }
+            );
+        }
+
         return res.status(200).json(ride);
 
     } catch (err) {

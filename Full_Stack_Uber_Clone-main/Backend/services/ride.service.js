@@ -171,12 +171,53 @@ module.exports.endRide = async ({ rideId, captain }) => {
         throw new Error('Ride not ongoing');
     }
 
+    const distanceTime = await mapService.getDistanceTime(ride.pickup, ride.destination);
+    const durationInSeconds = distanceTime.duration?.value || 0;
+    const distanceInMeters = distanceTime.distance?.value || 0;
+
     await rideModel.findOneAndUpdate({
         _id: rideId
     }, {
-        status: 'completed'
+        status: 'completed',
+        duration: durationInSeconds,
+        distance: distanceInMeters
     })
 
     return ride;
+}
+
+module.exports.getCaptainStats = async (captainId) => {
+    if (!captainId) {
+        throw new Error('Captain id is required');
+    }
+
+    const stats = await rideModel.aggregate([
+        {
+            $match: {
+                captain: captainId,
+                status: 'completed'
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                totalEarnings: { $sum: '$fare' },
+                totalDuration: { $sum: { $ifNull: [ '$duration', 0 ] } },
+                completedRides: { $sum: 1 }
+            }
+        }
+    ]);
+
+    const result = stats[0] || {
+        totalEarnings: 0,
+        totalDuration: 0,
+        completedRides: 0
+    };
+
+    return {
+        totalEarnings: result.totalEarnings,
+        totalHours: result.totalDuration / 3600,
+        completedRides: result.completedRides
+    };
 }
 

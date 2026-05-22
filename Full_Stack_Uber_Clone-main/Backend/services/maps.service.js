@@ -73,6 +73,32 @@ module.exports.getAutoCompleteSuggestions = async (input) => {
     }
 }
 
+module.exports.getCoordinateAddress = async (lat, lng) => {
+    if (!lat || !lng) {
+        throw new Error('Latitude and longitude are required');
+    }
+
+    const apiKey = process.env.GOOGLE_MAPS_API;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+    try {
+        const response = await axios.get(url);
+        if (response.data.status === 'OK') {
+            const address = response.data.results[0].formatted_address;
+            return {
+                address: address,
+                lat: lat,
+                lng: lng
+            };
+        } else {
+            throw new Error('Unable to fetch address');
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 module.exports.getCaptainsInTheRadius = async (lat, lng, radius) => {
 
     const captains = await captainModel.find({
