@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
         unique: true,
         minlength: [ 5, 'Email must be at least 5 characters long' ],
     },
+    mobile: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
     password: {
         type: String,
         required: true,
@@ -28,6 +33,10 @@ const userSchema = new mongoose.Schema({
     },
     socketId: {
         type: String,
+    },
+    lastOnlineTime: {
+        type: Date,
+        default: null,
     },
 })
 

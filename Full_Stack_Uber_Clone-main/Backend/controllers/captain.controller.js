@@ -14,10 +14,12 @@ module.exports.registerCaptain = async (req, res, next) => {
 
     const { fullname, email, password, vehicle } = req.body;
 
-    const isCaptainAlreadyExist = await captainModel.findOne({ email });
+    const { mobile } = req.body;
+
+    const isCaptainAlreadyExist = await captainModel.findOne({ $or: [{ email }, { mobile }] });
 
     if (isCaptainAlreadyExist) {
-        return res.status(400).json({ message: 'Captain already exist' });
+        return res.status(400).json({ message: 'Captain with provided email or mobile already exists' });
     }
 
 
@@ -27,6 +29,7 @@ module.exports.registerCaptain = async (req, res, next) => {
         firstname: fullname.firstname,
         lastname: fullname.lastname,
         email,
+        mobile,
         password: hashedPassword,
         color: vehicle.color,
         plate: vehicle.plate,
@@ -51,9 +54,8 @@ module.exports.loginCaptain = async (req, res, next) => {
     }
 
     const { email, password } = req.body;
-
     const captain = await captainModel
-        .findOne({ email })
+        .findOne({ $or: [{ email }, { mobile: email }] })
         .select('+password');
 
     if (!captain) {
@@ -73,6 +75,7 @@ module.exports.loginCaptain = async (req, res, next) => {
 
     // ✅ captain becomes active after login
     captain.status = 'active';
+    captain.lastOnlineTime = new Date();
 
     await captain.save();
 
@@ -88,6 +91,36 @@ module.exports.loginCaptain = async (req, res, next) => {
 
 module.exports.getCaptainProfile = async (req, res, next) => {
     res.status(200).json({ captain: req.captain });
+}
+
+module.exports.updateCaptainProfile = async (req, res, next) => {
+    try {
+        const captain = req.captain;
+        const { fullname, email, mobile, vehicle } = req.body;
+
+        if (fullname) {
+            captain.fullname = captain.fullname || {};
+            if (fullname.firstname) captain.fullname.firstname = fullname.firstname;
+            if (fullname.lastname) captain.fullname.lastname = fullname.lastname;
+        }
+
+        if (email) captain.email = email;
+        if (mobile) captain.mobile = mobile;
+
+        if (vehicle) {
+            captain.vehicle = captain.vehicle || {};
+            if (vehicle.color) captain.vehicle.color = vehicle.color;
+            if (vehicle.plate) captain.vehicle.plate = vehicle.plate;
+            if (vehicle.capacity) captain.vehicle.capacity = vehicle.capacity;
+            if (vehicle.vehicleType) captain.vehicle.vehicleType = vehicle.vehicleType;
+        }
+
+        await captain.save();
+
+        res.status(200).json({ captain });
+    } catch (err) {
+        next(err);
+    }
 }
 
 module.exports.getCaptainStats = async (req, res, next) => {

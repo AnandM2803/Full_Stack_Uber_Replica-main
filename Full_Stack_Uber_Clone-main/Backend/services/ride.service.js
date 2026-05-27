@@ -86,7 +86,7 @@ module.exports.createRide = async ({
         user,
         pickup,
         destination,
-        otp: getOtp(6),
+        otp: getOtp(4),
         fare: fare[ vehicleType ]
     })
 
@@ -191,6 +191,9 @@ module.exports.getCaptainStats = async (captainId) => {
         throw new Error('Captain id is required');
     }
 
+    const captainModel = require('../models/captain.model');
+    const captain = await captainModel.findById(captainId);
+
     const stats = await rideModel.aggregate([
         {
             $match: {
@@ -214,9 +217,19 @@ module.exports.getCaptainStats = async (captainId) => {
         completedRides: 0
     };
 
+    let totalHours = result.totalDuration / 3600;
+
+    // Add current online session time if captain is active
+    if (captain && captain.status === 'active' && captain.lastOnlineTime) {
+        const currentTime = new Date();
+        const sessionDurationSeconds = (currentTime - captain.lastOnlineTime) / 1000;
+        const sessionHours = sessionDurationSeconds / 3600;
+        totalHours += sessionHours;
+    }
+
     return {
         totalEarnings: result.totalEarnings,
-        totalHours: result.totalDuration / 3600,
+        totalHours: totalHours,
         completedRides: result.completedRides
     };
 }
